@@ -13,10 +13,10 @@ import protectedLove from "@/assets/gallery-protected-love.jpg";
 const images = [
   { id: 1, caption: "Warm moments", src: warmMoments },
   { id: 2, caption: "Family first", src: familyFirst },
-  { id: 3, caption: "Dreams & study", src: dreamsStudy },
+  { id: 3, caption: "Self dependent", src: dreamsStudy },
   { id: 4, caption: "Quiet strength", src: quietStrength },
-  { id: 5, caption: "Gentle ambition", src: gentleAmbition },
-  { id: 6, caption: "Protected love", src: protectedLove },
+  { id: 5, caption: "Travelling with family", src: gentleAmbition },
+  { id: 6, caption: "Life Partner... not now", src: protectedLove },
 ];
 
 export default function Gallery() {

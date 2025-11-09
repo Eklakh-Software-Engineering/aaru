@@ -22,31 +22,10 @@ const App = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Create a very soft ambient sound using Web Audio API
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (AudioContext) {
-      const audioContext = new AudioContext();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 432; // Calming frequency
-      gainNode.gain.value = 0; // Start muted
-      
-      oscillator.start();
-      
-      audioRef.current = {
-        play: () => {
-          gainNode.gain.setTargetAtTime(0.01, audioContext.currentTime, 0.5);
-          return Promise.resolve();
-        },
-        pause: () => {
-          gainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.5);
-        },
-      } as any;
-    }
+    // Create audio element with uploaded music
+    audioRef.current = new Audio('/music.mp3');
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.3;
   }, []);
 
   const toggleMusic = () => {
