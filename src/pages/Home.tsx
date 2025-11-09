@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import miniGallery1 from "@/assets/mini-gallery-1.jpg";
+import miniGallery2 from "@/assets/mini-gallery-2.jpg";
+import miniGallery3 from "@/assets/mini-gallery-3.jpg";
+import miniGallery4 from "@/assets/mini-gallery-4.jpg";
 
 const quotes = [
   "You are allowed to take time; your ambition does not demand your exhaustion.",
@@ -87,14 +91,16 @@ export default function Home() {
           <Card className="p-6 shadow-elevated border-primary/10 bg-gradient-to-br from-card to-card-glass animate-fadeIn" style={{ animationDelay: "0.2s" }}>
             <h3 className="font-playfair text-2xl font-bold mb-6">Mini Gallery</h3>
             <div className="grid grid-cols-2 gap-4 mb-6">
-              {[1, 2, 3, 4].map((i) => (
+              {[miniGallery1, miniGallery2, miniGallery3, miniGallery4].map((img, i) => (
                 <div
                   key={i}
-                  className="aspect-square rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 hover:scale-105 transition-transform cursor-pointer overflow-hidden"
+                  className="aspect-square rounded-lg hover:scale-105 transition-transform cursor-pointer overflow-hidden shadow-soft"
                 >
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
-                    Memory {i}
-                  </div>
+                  <img 
+                    src={img} 
+                    alt={`Memory ${i + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               ))}
             </div>

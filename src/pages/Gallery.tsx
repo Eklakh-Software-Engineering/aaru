@@ -3,14 +3,20 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import warmMoments from "@/assets/gallery-warm-moments.jpg";
+import familyFirst from "@/assets/gallery-family-first.jpg";
+import dreamsStudy from "@/assets/gallery-dreams-study.jpg";
+import quietStrength from "@/assets/gallery-quiet-strength.jpg";
+import gentleAmbition from "@/assets/gallery-gentle-ambition.jpg";
+import protectedLove from "@/assets/gallery-protected-love.jpg";
 
 const images = [
-  { id: 1, caption: "Warm moments", color: "from-rose-100 to-pink-100" },
-  { id: 2, caption: "Family first", color: "from-amber-100 to-orange-100" },
-  { id: 3, caption: "Dreams & study", color: "from-purple-100 to-pink-100" },
-  { id: 4, caption: "Quiet strength", color: "from-blue-100 to-indigo-100" },
-  { id: 5, caption: "Gentle ambition", color: "from-green-100 to-teal-100" },
-  { id: 6, caption: "Protected love", color: "from-red-100 to-rose-100" },
+  { id: 1, caption: "Warm moments", src: warmMoments },
+  { id: 2, caption: "Family first", src: familyFirst },
+  { id: 3, caption: "Dreams & study", src: dreamsStudy },
+  { id: 4, caption: "Quiet strength", src: quietStrength },
+  { id: 5, caption: "Gentle ambition", src: gentleAmbition },
+  { id: 6, caption: "Protected love", src: protectedLove },
 ];
 
 export default function Gallery() {
@@ -56,13 +62,13 @@ export default function Gallery() {
               className="group overflow-hidden cursor-pointer shadow-soft border-primary/10 hover:shadow-elevated transition-all duration-300 animate-fadeIn"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div
-                className={`aspect-square bg-gradient-to-br ${image.color} flex items-center justify-center relative overflow-hidden`}
-              >
+              <div className="aspect-square relative overflow-hidden">
+                <img 
+                  src={image.src} 
+                  alt={image.caption}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                <span className="text-6xl opacity-20 group-hover:opacity-30 transition-opacity">
-                  ♥
-                </span>
               </div>
               <div className="p-4 bg-gradient-to-br from-card to-card-glass">
                 <p className="text-center font-medium text-foreground">
@@ -87,10 +93,12 @@ export default function Gallery() {
 
               {currentImage && (
                 <div className="animate-fadeIn">
-                  <div
-                    className={`aspect-video bg-gradient-to-br ${currentImage.color} rounded-lg flex items-center justify-center mb-4`}
-                  >
-                    <span className="text-9xl opacity-20">♥</span>
+                  <div className="aspect-video rounded-lg overflow-hidden mb-4">
+                    <img 
+                      src={currentImage.src} 
+                      alt={currentImage.caption}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <p className="text-center text-white text-xl font-medium mb-4">
                     {currentImage.caption}
