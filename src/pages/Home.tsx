@@ -31,7 +31,7 @@ export default function Home() {
           {/* Left Column */}
           <div className="space-y-8 animate-fadeIn">
             <div>
-              <h1 className="font-playfair text-5xl md:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="font-playfair text-5xl md:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-scale-up">
                 Hey Arnima —<br />breathe. You've got this.
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
@@ -62,7 +62,7 @@ export default function Home() {
                 </Button>
               </div>
               
-              <Card className="p-6 shadow-soft border-primary/10 bg-gradient-to-br from-card to-card-glass animate-fadeIn">
+              <Card className="p-6 shadow-soft border-primary/10 bg-gradient-to-br from-card to-card-glass animate-fadeIn hover:shadow-glow transition-all duration-300">
                 <p className="text-foreground/80 italic leading-relaxed">
                   "{currentQuote}"
                 </p>
@@ -88,7 +88,9 @@ export default function Home() {
           </div>
 
           {/* Right Column - Mini Gallery */}
-          <Card className="p-6 shadow-elevated border-primary/10 bg-gradient-to-br from-card to-card-glass animate-fadeIn" style={{ animationDelay: "0.2s" }}>
+          <Card className="p-6 shadow-elevated border-primary/10 bg-gradient-to-br from-card to-card-glass animate-scale-up overflow-hidden relative group" style={{ animationDelay: "0.2s" }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative z-10">
             <h3 className="font-playfair text-2xl font-bold mb-6">Mini Gallery</h3>
             <div className="grid grid-cols-2 gap-4 mb-6">
               {[miniGallery1, miniGallery2, miniGallery3, miniGallery4].map((img, i) => (
@@ -109,6 +111,7 @@ export default function Home() {
                 Open Letter
               </Button>
             </Link>
+            </div>
           </Card>
         </div>
       </div>

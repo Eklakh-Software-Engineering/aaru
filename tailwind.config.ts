@@ -19,11 +19,13 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         "background-secondary": "hsl(var(--background-secondary))",
+        "background-tertiary": "hsl(var(--background-tertiary))",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           glow: "hsl(var(--primary-glow))",
+          dark: "hsl(var(--primary-dark))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -40,6 +42,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          light: "hsl(var(--accent-light))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -49,6 +52,7 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
           glass: "hsl(var(--card-glass))",
+          elevated: "hsl(var(--card-elevated))",
         },
       },
       borderRadius: {
@@ -89,6 +93,18 @@ export default {
           "0%": { backgroundPosition: "-1000px 0" },
           "100%": { backgroundPosition: "1000px 0" },
         },
+        parallax: {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(-10px)" },
+        },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(232, 126, 166, 0.3)" },
+          "50%": { boxShadow: "0 0 40px rgba(232, 126, 166, 0.6)" },
+        },
+        "scale-up": {
+          from: { transform: "scale(0.95)", opacity: "0" },
+          to: { transform: "scale(1)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -99,6 +115,9 @@ export default {
         slideIn: "slideIn 0.5s ease-out",
         flip: "flip 0.6s ease-in-out",
         shimmer: "shimmer 2s linear infinite",
+        parallax: "parallax 3s ease-in-out infinite alternate",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "scale-up": "scale-up 0.4s ease-out",
       },
       fontFamily: {
         playfair: ['"Playfair Display"', 'serif'],
