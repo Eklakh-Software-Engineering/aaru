@@ -1,5 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { Music, MicOff } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Music, MicOff, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +11,12 @@ interface NavigationProps {
 
 export const Navigation = ({ isMusicPlaying, onMusicToggle }: NavigationProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
 
   const links = [
     { to: "/", label: "Home" },
@@ -53,6 +60,14 @@ export const Navigation = ({ isMusicPlaying, onMusicToggle }: NavigationProps) =
           >
             {isMusicPlaying ? <Music className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
           </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            className="ml-2"
+          >
+            <LogOut className="h-5 w-5" />
+          </Button>
         </div>
 
         <div className="md:hidden flex items-center gap-2">
@@ -62,6 +77,13 @@ export const Navigation = ({ isMusicPlaying, onMusicToggle }: NavigationProps) =
             onClick={onMusicToggle}
           >
             {isMusicPlaying ? <Music className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-5 w-5" />
           </Button>
         </div>
       </nav>
