@@ -8,34 +8,38 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Romantic gradient system - blush to rose to ivory */
+    /* Enhanced romantic gradient system */
     --background: 350 100% 98%;
     --background-secondary: 340 100% 96%;
+    --background-tertiary: 345 95% 97%;
     --foreground: 330 30% 20%;
 
     --card: 0 0% 100%;
     --card-foreground: 330 30% 20%;
     --card-glass: 350 100% 99%;
+    --card-elevated: 0 0% 100%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 330 30% 20%;
 
-    /* Soft rose primary */
+    /* Vibrant rose primary */
     --primary: 340 82% 67%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 340 95% 85%;
+    --primary-dark: 340 75% 55%;
 
-    /* Cream secondary */
+    /* Warm cream secondary */
     --secondary: 40 60% 96%;
     --secondary-foreground: 330 30% 20%;
 
-    /* Muted mauve */
+    /* Soft mauve */
     --muted: 330 20% 94%;
     --muted-foreground: 330 15% 45%;
 
-    /* Accent deep rose */
+    /* Deep rose accent */
     --accent: 345 75% 60%;
     --accent-foreground: 0 0% 100%;
+    --accent-light: 345 80% 75%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
@@ -46,19 +50,26 @@ All colors MUST be HSL.
 
     --radius: 0.875rem;
 
-    /* Gradients */
-    --gradient-romantic: linear-gradient(135deg, hsl(350 100% 98%), hsl(340 100% 96%));
+    /* Advanced Gradients */
+    --gradient-romantic: linear-gradient(135deg, hsl(350 100% 98%), hsl(340 100% 96%), hsl(345 95% 97%));
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(350 100% 99%));
     --gradient-accent: linear-gradient(135deg, hsl(340 82% 67%), hsl(345 75% 60%));
+    --gradient-mesh: radial-gradient(at 0% 0%, hsl(340 82% 67% / 0.3) 0px, transparent 50%),
+                     radial-gradient(at 100% 0%, hsl(345 75% 60% / 0.2) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, hsl(340 95% 85% / 0.25) 0px, transparent 50%),
+                     radial-gradient(at 0% 100%, hsl(350 100% 98%) 0px, transparent 50%);
     
-    /* Shadows */
+    /* Enhanced Shadows */
     --shadow-soft: 0 10px 30px rgba(232, 126, 166, 0.08);
     --shadow-glow: 0 0 40px rgba(232, 126, 166, 0.12);
     --shadow-elevated: 0 20px 60px rgba(232, 126, 166, 0.15);
+    --shadow-intense: 0 30px 80px rgba(232, 126, 166, 0.2);
+    --shadow-inner: inset 0 2px 4px rgba(232, 126, 166, 0.06);
     
-    /* Transitions */
+    /* Advanced Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-spring: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 }
 
@@ -69,11 +80,24 @@ All colors MUST be HSL.
 
   body {
     @apply text-foreground;
-    background: linear-gradient(160deg, hsl(var(--background)), hsl(var(--background-secondary)));
+    background: hsl(var(--background));
+    position: relative;
     min-height: 100vh;
     font-family: 'Poppins', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-mesh);
+    z-index: -1;
+    opacity: 0.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -83,9 +107,20 @@ All colors MUST be HSL.
   }
 
   .glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .glass-hover {
+    transition: var(--transition-smooth);
+  }
+
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
   }
 }
 
@@ -117,4 +152,19 @@ All colors MUST be HSL.
 @keyframes shimmer {
   0% { background-position: -1000px 0; }
   100% { background-position: 1000px 0; }
+}
+
+@keyframes parallax {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(232, 126, 166, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(232, 126, 166, 0.6); }
+}
+
+@keyframes scale-up {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

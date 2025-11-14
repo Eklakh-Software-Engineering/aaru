@@ -32,9 +32,9 @@ export const Navigation = ({ isMusicPlaying, onMusicToggle }: NavigationProps) =
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link
           to="/"
-          className="font-playfair text-xl font-bold text-foreground hover:text-primary transition-colors"
+          className="font-playfair text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
         >
-          For Arnima
+          Arnima
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
