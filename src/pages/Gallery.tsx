@@ -1,85 +1,124 @@
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import warmMoments from "@/assets/gallery-warm-moments.jpg";
-import familyFirst from "@/assets/gallery-family-first.jpg";
-import dreamsStudy from "@/assets/gallery-dreams-study.jpg";
-import quietStrength from "@/assets/gallery-quiet-strength.jpg";
-import gentleAmbition from "@/assets/gallery-gentle-ambition.jpg";
-import protectedLove from "@/assets/gallery-protected-love.jpg";
-
-const images = [
-  { id: 1, caption: "Warm moments", src: warmMoments },
-  { id: 2, caption: "Family first", src: familyFirst },
-  { id: 3, caption: "Self dependent", src: dreamsStudy },
-  { id: 4, caption: "Quiet strength", src: quietStrength },
-  { id: 5, caption: "Travelling with family", src: gentleAmbition },
-  { id: 6, caption: "Life Partner... not now", src: protectedLove },
-];
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { ChevronLeft, ChevronRight, X, Plus, Calendar, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useGalleryMoments, type GalleryMoment } from "@/hooks/useGalleryMoments";
+import { GalleryMomentForm } from "@/components/GalleryMomentForm";
+import { GalleryCard } from "@/components/GalleryCard";
 
 export default function Gallery() {
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [userId, setUserId] = useState<string | undefined>();
+  const [selectedMoment, setSelectedMoment] = useState<GalleryMoment | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingMoment, setEditingMoment] = useState<GalleryMoment | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  const openLightbox = (id: number) => {
-    setSelectedImage(id);
-  };
+  const { moments, loading, addMoment, updateMoment, deleteMoment } = useGalleryMoments(userId);
 
-  const closeLightbox = () => {
-    setSelectedImage(null);
-  };
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserId(user?.id);
+    });
+  }, []);
+
+  const openLightbox = (moment: GalleryMoment) => setSelectedMoment(moment);
+  const closeLightbox = () => setSelectedMoment(null);
+
+  const currentIndex = selectedMoment ? moments.findIndex((m) => m.id === selectedMoment.id) : -1;
 
   const nextImage = () => {
-    if (selectedImage !== null) {
-      setSelectedImage((selectedImage % images.length) + 1);
+    if (currentIndex !== -1 && moments.length > 0) {
+      const nextIndex = (currentIndex + 1) % moments.length;
+      setSelectedMoment(moments[nextIndex]);
     }
   };
 
   const prevImage = () => {
-    if (selectedImage !== null) {
-      setSelectedImage(selectedImage === 1 ? images.length : selectedImage - 1);
+    if (currentIndex !== -1 && moments.length > 0) {
+      const prevIndex = currentIndex === 0 ? moments.length - 1 : currentIndex - 1;
+      setSelectedMoment(moments[prevIndex]);
     }
   };
 
-  const currentImage = images.find((img) => img.id === selectedImage);
+  const handleAddMoment = async (title: string, description: string, momentDate: string, imageFile?: File) => {
+    if (!imageFile) return false;
+    return addMoment(title, description, imageFile, momentDate);
+  };
+
+  const handleEditMoment = async (title: string, description: string, momentDate: string, imageFile?: File) => {
+    if (!editingMoment) return false;
+    return updateMoment(editingMoment.id, title, description, momentDate, imageFile);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteConfirmId) {
+      await deleteMoment(deleteConfirmId);
+      setDeleteConfirmId(null);
+    }
+  };
+
+  const formattedDate = selectedMoment?.moment_date
+    ? new Date(selectedMoment.moment_date).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-12 text-center animate-fadeIn">
           <h1 className="font-playfair text-5xl font-bold mb-4">Gallery</h1>
-          <p className="text-muted-foreground text-lg">
-            Cherished moments captured in time.
-          </p>
+          <p className="text-muted-foreground text-lg mb-6">Cherished moments captured in time.</p>
+          {userId && (
+            <Button onClick={() => setFormOpen(true)} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add New Moment
+            </Button>
+          )}
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {images.map((image, index) => (
-            <Card
-              key={image.id}
-              onClick={() => openLightbox(image.id)}
-              className="group overflow-hidden cursor-pointer shadow-soft border-primary/10 hover:shadow-elevated transition-all duration-300 animate-fadeIn"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="aspect-square relative overflow-hidden">
-                <img 
-                  src={image.src} 
-                  alt={image.caption}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-              </div>
-              <div className="p-4 bg-gradient-to-br from-card to-card-glass">
-                <p className="text-center font-medium text-foreground">
-                  {image.caption}
-                </p>
-              </div>
-            </Card>
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : moments.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">
+            <p>No moments yet. Add your first cherished moment!</p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {moments.map((moment, index) => (
+              <GalleryCard
+                key={moment.id}
+                moment={moment}
+                index={index}
+                isOwner={userId === moment.user_id}
+                onView={() => openLightbox(moment)}
+                onEdit={() => {
+                  setEditingMoment(moment);
+                  setFormOpen(true);
+                }}
+                onDelete={() => setDeleteConfirmId(moment.id)}
+              />
+            ))}
+          </div>
+        )}
 
-        <Dialog open={selectedImage !== null} onOpenChange={closeLightbox}>
+        {/* Lightbox */}
+        <Dialog open={selectedMoment !== null} onOpenChange={closeLightbox}>
           <DialogContent className="max-w-4xl p-0 bg-transparent border-none">
             <div className="relative">
               <Button
@@ -91,18 +130,29 @@ export default function Gallery() {
                 <X className="h-5 w-5" />
               </Button>
 
-              {currentImage && (
+              {selectedMoment && (
                 <div className="animate-fadeIn">
                   <div className="aspect-video rounded-lg overflow-hidden mb-4">
-                    <img 
-                      src={currentImage.src} 
-                      alt={currentImage.caption}
+                    <img
+                      src={selectedMoment.image_url}
+                      alt={selectedMoment.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <p className="text-center text-white text-xl font-medium mb-4">
-                    {currentImage.caption}
+                  <p className="text-center text-white text-xl font-medium mb-2">
+                    {selectedMoment.title}
                   </p>
+                  {formattedDate && (
+                    <p className="text-center text-white/70 text-sm flex items-center justify-center gap-1 mb-2">
+                      <Calendar className="h-4 w-4" />
+                      {formattedDate}
+                    </p>
+                  )}
+                  {selectedMoment.description && (
+                    <p className="text-center text-white/80 text-base mb-4 max-w-lg mx-auto">
+                      {selectedMoment.description}
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -117,6 +167,36 @@ export default function Gallery() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Add/Edit Form */}
+        <GalleryMomentForm
+          open={formOpen}
+          onClose={() => {
+            setFormOpen(false);
+            setEditingMoment(null);
+          }}
+          onSubmit={editingMoment ? handleEditMoment : handleAddMoment}
+          moment={editingMoment || undefined}
+          mode={editingMoment ? "edit" : "add"}
+        />
+
+        {/* Delete Confirmation */}
+        <AlertDialog open={deleteConfirmId !== null} onOpenChange={() => setDeleteConfirmId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete this moment?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this moment from your gallery.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
