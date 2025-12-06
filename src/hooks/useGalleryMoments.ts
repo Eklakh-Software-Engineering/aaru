@@ -95,13 +95,12 @@ export function useGalleryMoments(userId: string | undefined) {
 
       if (uploadError) throw uploadError;
 
-      const { data: urlData } = supabase.storage.from("gallery").getPublicUrl(fileName);
-
+      // Store the file path (not full URL) for signed URL generation
       const { error } = await supabase.from("gallery_moments").insert({
         user_id: userId,
         title,
         description,
-        image_url: urlData.publicUrl,
+        image_url: fileName, // Store path, not public URL
         moment_date: momentDate,
         is_default: false,
       });
@@ -144,8 +143,7 @@ export function useGalleryMoments(userId: string | undefined) {
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage.from("gallery").getPublicUrl(fileName);
-        image_url = urlData.publicUrl;
+        image_url = fileName; // Store path, not public URL
       }
 
       const updateData: Record<string, any> = { title, description, moment_date: momentDate };
