@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useGalleryMoments, type GalleryMoment } from "@/hooks/useGalleryMoments";
 import { GalleryMomentForm } from "@/components/GalleryMomentForm";
 import { GalleryCard } from "@/components/GalleryCard";
+import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 
 export default function Gallery() {
   const [userId, setUserId] = useState<string | undefined>();
@@ -25,6 +26,9 @@ export default function Gallery() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const { moments, loading, addMoment, updateMoment, deleteMoment } = useGalleryMoments(userId);
+  
+  // Get signed URL for the currently selected moment in lightbox
+  const { signedUrl: lightboxImageUrl, loading: lightboxImageLoading } = useSignedImageUrl(selectedMoment?.image_url);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -133,11 +137,17 @@ export default function Gallery() {
               {selectedMoment && (
                 <div className="animate-fadeIn">
                   <div className="aspect-video rounded-lg overflow-hidden mb-4">
-                    <img
-                      src={selectedMoment.image_url}
-                      alt={selectedMoment.title}
-                      className="w-full h-full object-cover"
-                    />
+                    {lightboxImageLoading ? (
+                      <div className="w-full h-full flex items-center justify-center bg-black/50">
+                        <Loader2 className="h-8 w-8 animate-spin text-white" />
+                      </div>
+                    ) : (
+                      <img
+                        src={lightboxImageUrl || ""}
+                        alt={selectedMoment.title}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                   <p className="text-center text-white text-xl font-medium mb-2">
                     {selectedMoment.title}

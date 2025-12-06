@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Calendar } from "lucide-react";
+import { Pencil, Trash2, Calendar, Loader2 } from "lucide-react";
 import type { GalleryMoment } from "@/hooks/useGalleryMoments";
+import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 
 interface GalleryCardProps {
   moment: GalleryMoment;
@@ -13,6 +14,8 @@ interface GalleryCardProps {
 }
 
 export function GalleryCard({ moment, index, isOwner, onView, onEdit, onDelete }: GalleryCardProps) {
+  const { signedUrl, loading: imageLoading } = useSignedImageUrl(moment.image_url);
+  
   const formattedDate = moment.moment_date
     ? new Date(moment.moment_date).toLocaleDateString("en-US", {
         month: "short",
@@ -57,11 +60,17 @@ export function GalleryCard({ moment, index, isOwner, onView, onEdit, onDelete }
       )}
 
       <div className="aspect-square relative overflow-hidden">
-        <img
-          src={moment.image_url}
-          alt={moment.title}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
+        {imageLoading ? (
+          <div className="w-full h-full flex items-center justify-center bg-muted">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <img
+            src={signedUrl || ""}
+            alt={moment.title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          />
+        )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
       </div>
 
