@@ -9,7 +9,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 
 export default function Auth() {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,25 +21,12 @@ export default function Auth() {
     setError(null);
 
     try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        navigate("/");
-      } else {
-        const redirectUrl = `${window.location.origin}/`;
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: redirectUrl,
-          },
-        });
-        if (error) throw error;
-        setError("Check your email to confirm your account!");
-      }
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      navigate("/");
     } catch (err: any) {
       setError(err.message || "An error occurred");
     } finally {
@@ -56,7 +42,7 @@ export default function Auth() {
             Arnima
           </CardTitle>
           <CardDescription>
-            {isLogin ? "Welcome back" : "Create your account"}
+            Welcome back
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -84,7 +70,7 @@ export default function Auth() {
               />
             </div>
             {error && (
-              <Alert variant={error.includes("Check your email") ? "default" : "destructive"}>
+              <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -94,25 +80,11 @@ export default function Auth() {
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </>
-              ) : isLogin ? (
-                "Sign In"
               ) : (
-                "Sign Up"
+                "Sign In"
               )}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setError(null);
-              }}
-              className="text-primary hover:underline"
-            >
-              {isLogin ? "Need an account? Sign up" : "Already have an account? Sign in"}
-            </button>
-          </div>
         </CardContent>
       </Card>
     </div>
